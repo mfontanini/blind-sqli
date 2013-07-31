@@ -259,6 +259,3 @@ class Blind:
         print '[+] Username: ' + username
         print '[+] Database: ' + database
         print '[+] Version:  ' + version
-
-
-Blind('http://192.168.0.137/writable/sql.php?param=1', 'information_schema').proof_of_concept()
